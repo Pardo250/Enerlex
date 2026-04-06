@@ -1,38 +1,38 @@
-﻿> Task :app:preBuild UP-TO-DATE
+﻿> Task :app:clean
+> Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
-> Task :app:generateDebugResources UP-TO-DATE
-> Task :app:packageDebugResources UP-TO-DATE
-> Task :app:processDebugNavigationResources UP-TO-DATE
-> Task :app:parseDebugLocalResources UP-TO-DATE
-> Task :app:generateDebugRFile UP-TO-DATE
-> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
 > Task :app:generateDebugAssets UP-TO-DATE
-> Task :app:mergeDebugAssets UP-TO-DATE
-> Task :app:compressDebugAssets UP-TO-DATE
-> Task :app:desugarDebugFileDependencies UP-TO-DATE
-> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:parseDebugLocalResources
 > Task :app:checkDebugAarMetadata
+> Task :app:compileDebugNavigationResources
+> Task :app:generateDebugRFile
 > Task :app:mapDebugSourceSetPaths
-> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
-> Task :app:extractDeepLinksDebug UP-TO-DATE
-> Task :app:processDebugMainManifest
-> Task :app:processDebugManifest UP-TO-DATE
-> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
 > Task :app:mergeDebugResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:mergeDebugJniLibFolders
 > Task :app:checkDebugDuplicateClasses
-> Task :app:processDebugResources
-> Task :app:mergeDebugJniLibFolders UP-TO-DATE
-> Task :app:mergeLibDexDebug
-> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:mergeDebugNativeLibs
 > Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:mergeLibDexDebug
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugManifestForPackage
 
 > Task :app:stripDebugDebugSymbols
 Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so. Run with --info option to learn more.
 
-> Task :app:writeDebugAppMetadata
-> Task :app:writeDebugSigningConfigVersions
-> Task :app:mergeExtDexDebug
+> Task :app:processDebugResources
 
 > Task :app:compileDebugKotlin
 w: file:///C:/Users/juand/Downloads/Enerlex/app/src/main/java/com/example/enerlex/ui/devicedetail/DeviceDetailScreen.kt:55:48 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
@@ -41,14 +41,15 @@ w: file:///C:/Users/juand/Downloads/Enerlex/app/src/main/java/com/example/enerle
 
 > Task :app:compileDebugJavaWithJavac NO-SOURCE
 > Task :app:dexBuilderDebug
-> Task :app:mergeDebugGlobalSynthetics
 > Task :app:processDebugJavaRes
+> Task :app:mergeDebugGlobalSynthetics
 > Task :app:mergeProjectDexDebug
+> Task :app:mergeExtDexDebug
 > Task :app:mergeDebugJavaResource
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect
 > Task :app:assembleDebug
 
-BUILD SUCCESSFUL in 27s
-36 actionable tasks: 20 executed, 16 up-to-date
+BUILD SUCCESSFUL in 13s
+37 actionable tasks: 37 executed
 Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html
