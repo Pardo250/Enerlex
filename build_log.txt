@@ -1,0 +1,334 @@
+﻿> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:parseDebugLocalResources
+> Task :app:checkDebugAarMetadata FAILED
+> Task :app:generateDebugRFile
+> Task :app:compileDebugNavigationResources
+.\gradlew.bat : 
+At line:1 char:1
++ .\gradlew.bat 
+assembleDebug 2>&1 | 
+Out-File -FilePath 
+"build_log.txt" ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
+    + CategoryInfo       
+       : NotSpecified:   
+  (:String) [], Remote   
+ Exception
+    + FullyQualifiedErro 
+   rId : NativeCommandE  
+  rror
+ 
+FAILURE: Build failed 
+with an exception.
+
+* What went wrong:
+Execution failed for 
+task ':app:checkDebugAarM
+etadata'.
+> A failure occurred 
+while executing com.andro
+id.build.gradle.internal.
+tasks.CheckAarMetadataWor
+kAction
+   > 7 issues were found 
+when checking AAR 
+metadata:
+     
+       1.  Dependency 'an
+droidx.navigationevent:na
+vigationevent-android:1.0
+.0' requires libraries 
+and applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+     
+       2.  Dependency 'an
+droidx.navigationevent:na
+vigationevent-compose-and
+roid:1.0.0' requires 
+libraries and 
+applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+     
+       3.  Dependency 'an
+droidx.core:core:1.18.0' 
+requires libraries and 
+applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+     
+       4.  Dependency 'an
+droidx.activity:activity-
+ktx:1.13.0' requires 
+libraries and 
+applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+     
+       5.  Dependency 'an
+droidx.activity:activity:
+1.13.0' requires 
+libraries and 
+applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+     
+       6.  Dependency 'an
+droidx.activity:activity-
+compose:1.13.0' requires 
+libraries and 
+applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+     
+       7.  Dependency 'an
+droidx.core:core-ktx:1.18
+.0' requires libraries 
+and applications that
+           depend on it 
+to compile against 
+version 36 or later of 
+the
+           Android APIs.
+     
+           :app is 
+currently compiled 
+against android-35.
+     
+           Recommended 
+action: Update this 
+project to use a newer 
+compileSdk
+           of at least 
+36, for example 36.
+     
+           Note that 
+updating a library or 
+application's compileSdk 
+(which
+           allows newer 
+APIs to be used) can be 
+done separately from 
+updating
+           targetSdk 
+(which opts the app in 
+to new runtime behavior) 
+and
+           minSdk (which 
+determines which devices 
+the app can be installed
+           on).
+
+* Try:
+> Run with --stacktrace 
+option to get the stack 
+trace.
+> Run with --info or 
+--debug option to get 
+more log output.
+> Run with --scan to 
+generate a Build Scan 
+(Powered by Develocity).
+> Get more help at 
+https://help.gradle.org.
+
+BUILD FAILED in 9s
+11 actionable tasks: 11 executed
