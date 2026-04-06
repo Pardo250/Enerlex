@@ -17,7 +17,7 @@
 
 ## 📖 Descripción
 
-**EnerFlow** es una aplicación Android diseñada para la gestión inteligente del consumo eléctrico del hogar. Conectada a enchufes inteligentes y sensores de energía, permite al usuario visualizar en tiempo real cuánta energía consume cada dispositivo, recibir alertas cuando el consumo supera los límites establecidos y tomar decisiones informadas para reducir la factura eléctrica.
+**Enerlex** es una aplicación Android diseñada para la gestión inteligente del consumo eléctrico del hogar. Conectada a enchufes inteligentes y sensores de energía, permite al usuario visualizar en tiempo real cuánta energía consume cada dispositivo, recibir alertas cuando el consumo supera los límites establecidos y tomar decisiones informadas para reducir la factura eléctrica.
 
 La app sigue los principios de **Clean Architecture** con una interfaz oscura, moderna y fluida construida íntegramente con **Jetpack Compose**.
 
