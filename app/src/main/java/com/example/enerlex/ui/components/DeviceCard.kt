@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.LightbulbCircle
 import androidx.compose.material.icons.filled.Microwave
 import androidx.compose.material.icons.filled.Tv
-import androidx.compose.material.icons.filled.Wind
 import androidx.compose.material.icons.outlined.DevicesOther
 import androidx.compose.material.icons.outlined.LocalLaundryService
 import androidx.compose.material3.*
