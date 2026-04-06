@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ EnerFlow
+# ⚡ Enerlex
 
 ### Smart Home Energy Management — Android App
 
