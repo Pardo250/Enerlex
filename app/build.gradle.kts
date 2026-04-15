@@ -43,10 +43,12 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     implementation(platform(libs.androidx.compose.bom))
+    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("com.google.firebase:firebase-analytics")
     implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.androidx.navigation.compose)

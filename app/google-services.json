@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "468458878900",
+    "project_id": "enerlex-1eacc",
+    "storage_bucket": "enerlex-1eacc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468458878900:android:27376e8af2aa75d370a4e1",
+        "android_client_info": {
+          "package_name": "com.example.enerlex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFzeJc-EXixS0Jpew0q_iGYZbCXTH-F8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
