@@ -55,7 +55,7 @@ fun EnerBottomNavBar(
             .background(EnerSurface)
     ) {
         // Línea superior sutil
-        Divider(
+        HorizontalDivider(
             color = EnerDivider,
             thickness = 1.dp
         )

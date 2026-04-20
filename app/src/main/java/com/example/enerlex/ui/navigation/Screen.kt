@@ -6,6 +6,7 @@ package com.example.enerlex.ui.navigation
  */
 sealed class Screen(val route: String) {
     object Login        : Screen("login")
+    object Register     : Screen("register")
     object Dashboard    : Screen("dashboard")
     object Devices      : Screen("devices")
     object DeviceDetail : Screen("device_detail/{deviceId}") {

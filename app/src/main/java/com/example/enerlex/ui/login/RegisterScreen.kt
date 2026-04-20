@@ -3,10 +3,13 @@ package com.example.enerlex.ui.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -25,14 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.enerlex.ui.theme.*
 
-/**
- * Pantalla de inicio de sesión – pantalla 01 del mockup.
- */
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel,
-    onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+fun RegisterScreen(
+    viewModel: RegisterViewModel,
+    onRegisterSuccess: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -41,58 +41,88 @@ fun LoginScreen(
             .fillMaxSize()
             .background(EnerBackground)
     ) {
+        // Botón de volver
+        IconButton(
+            onClick = onNavigateBack,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = 16.dp, start = 8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Volver",
+                tint = EnerTextSecondary
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 32.dp, vertical = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
             // ── Logo ──────────────────────────────────────────────────────
             Box(
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(20.dp))
+                    .size(72.dp)
+                    .clip(RoundedCornerShape(18.dp))
                     .background(EnerSurfaceVariant)
-                    .border(1.dp, EnerGreen.copy(alpha = 0.4f), RoundedCornerShape(20.dp)),
+                    .border(1.dp, EnerGreen.copy(alpha = 0.4f), RoundedCornerShape(18.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(32.dp)
                         .clip(CircleShape)
                         .background(
-                            Brush.radialGradient(
-                                colors = listOf(EnerGreen, EnerGreenDark)
-                            )
+                            Brush.radialGradient(colors = listOf(EnerGreen, EnerGreenDark))
                         )
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "EnerFlow",
-                fontSize = 32.sp,
+                text = "Crear cuenta",
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = EnerTextPrimary
             )
             Text(
-                text = "Monitoreo inteligente de energía",
+                text = "Únete a EnerFlow",
                 fontSize = 14.sp,
                 color = EnerTextSecondary,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // ── Campo Email ───────────────────────────────────────────────
+            // ── Nombre ────────────────────────────────────────────────────
+            OutlinedTextField(
+                value = uiState.name,
+                onValueChange = viewModel::onNameChange,
+                label = { Text("Nombre completo", color = EnerTextHint) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = EnerTextPrimary,
+                    unfocusedTextColor = EnerTextPrimary,
+                    focusedContainerColor = EnerSurfaceVariant,
+                    unfocusedContainerColor = EnerSurfaceVariant,
+                    focusedBorderColor = EnerGreen,
+                    unfocusedBorderColor = EnerBorder
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ── Email ─────────────────────────────────────────────────────
             OutlinedTextField(
                 value = uiState.email,
                 onValueChange = viewModel::onEmailChange,
-                placeholder = {
-                    Text("correo@ejemplo.com", color = EnerTextHint)
-                },
+                label = { Text("Correo electrónico", color = EnerTextHint) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
@@ -109,30 +139,46 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // ── Campo Contraseña ──────────────────────────────────────────
+            // ── Contraseña ────────────────────────────────────────────────
             OutlinedTextField(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChange,
-                placeholder = {
-                    Text("••••••••", color = EnerTextHint)
-                },
+                label = { Text("Contraseña", color = EnerTextHint) },
                 singleLine = true,
                 visualTransformation = if (uiState.isPasswordVisible)
-                    VisualTransformation.None
-                else
-                    PasswordVisualTransformation(),
+                    VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = viewModel::onTogglePasswordVisibility) {
                         Icon(
                             imageVector = if (uiState.isPasswordVisible)
-                                Icons.Filled.Visibility
-                            else
-                                Icons.Filled.VisibilityOff,
+                                Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                             contentDescription = "Ver contraseña",
                             tint = EnerTextSecondary
                         )
                     }
                 },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = EnerTextPrimary,
+                    unfocusedTextColor = EnerTextPrimary,
+                    focusedContainerColor = EnerSurfaceVariant,
+                    unfocusedContainerColor = EnerSurfaceVariant,
+                    focusedBorderColor = EnerGreen,
+                    unfocusedBorderColor = EnerBorder
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ── Confirmar contraseña ──────────────────────────────────────
+            OutlinedTextField(
+                value = uiState.confirmPassword,
+                onValueChange = viewModel::onConfirmPasswordChange,
+                label = { Text("Confirmar contraseña", color = EnerTextHint) },
+                singleLine = true,
+                visualTransformation = if (uiState.isPasswordVisible)
+                    VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -156,34 +202,26 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Olvidé contraseña
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                TextButton(onClick = {}) {
-                    Text(
-                        text = "¿Olvidé mi contraseña?",
-                        color = EnerGreen,
-                        fontSize = 13.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // ── Botón Iniciar Sesión ──────────────────────────────────────
+            // ── Botón Crear cuenta ────────────────────────────────────────
             Button(
-                onClick = { viewModel.onLogin(onSuccess = onLoginSuccess) },
-                enabled = !uiState.isLoading, // Desactiva el botón mientras carga
-                modifier = Modifier.fillMaxWidth().height(52.dp),
+                onClick = { viewModel.onRegister(onSuccess = onRegisterSuccess) },
+                enabled = !uiState.isLoading,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = EnerGreen)
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator(color = Color(0xFF003D2E), modifier = Modifier.size(24.dp))
+                    CircularProgressIndicator(
+                        color = Color(0xFF003D2E),
+                        modifier = Modifier.size(24.dp)
+                    )
                 } else {
                     Text(
-                        text = "Iniciar sesión",
+                        text = "Crear cuenta",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF003D2E)
@@ -191,43 +229,21 @@ fun LoginScreen(
                 }
             }
 
-            // ── Continuar con Google ──────────────────────────────────────
-            OutlinedButton(
-                onClick = { onLoginSuccess() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                border = ButtonDefaults.outlinedButtonBorder.copy(
-                    brush = Brush.horizontalGradient(listOf(EnerBorder, EnerBorder))
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = EnerGoogleButton,
-                    contentColor = EnerTextPrimary
-                )
-            ) {
-                Text(
-                    text = "Continuar con Google",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // ── Crear cuenta ──────────────────────────────────────────────
+            // ── Ya tengo cuenta ───────────────────────────────────────────
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "¿No tienes cuenta? ",
+                    text = "¿Ya tienes cuenta? ",
                     color = EnerTextSecondary,
                     fontSize = 14.sp
                 )
-                TextButton(onClick = onNavigateToRegister) {
+                TextButton(onClick = onNavigateBack) {
                     Text(
-                        text = "Crear cuenta",
+                        text = "Iniciar sesión",
                         color = EnerGreen,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
