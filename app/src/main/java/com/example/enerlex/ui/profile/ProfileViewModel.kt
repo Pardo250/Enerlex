@@ -17,7 +17,9 @@ data class ProfileUiState(
     val isLoading: Boolean = false,
     val successMessage: String? = null,
     val errorMessage: String? = null,
-    val showDeleteDialog: Boolean = false
+    val showDeleteDialog: Boolean = false,
+    val monthlyReadings: List<com.example.enerlex.data.model.EnergyReading> = emptyList(),
+    val averageKwh: Double = 0.0
 )
 
 class ProfileViewModel : ViewModel() {
@@ -26,6 +28,24 @@ class ProfileViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    init {
+        loadMonthlyData()
+    }
+
+    private fun loadMonthlyData() {
+        // Datos simulados de consumo de los últimos 6 meses
+        val readings = listOf(
+            com.example.enerlex.data.model.EnergyReading(0, 145f, "Ene"),
+            com.example.enerlex.data.model.EnergyReading(1, 130f, "Feb"),
+            com.example.enerlex.data.model.EnergyReading(2, 155f, "Mar"),
+            com.example.enerlex.data.model.EnergyReading(3, 120f, "Abr"),
+            com.example.enerlex.data.model.EnergyReading(4, 110f, "May"),
+            com.example.enerlex.data.model.EnergyReading(5, 125f, "Jun")
+        )
+        val avg = readings.map { it.watts }.average()
+        _uiState.update { it.copy(monthlyReadings = readings, averageKwh = Math.round(avg * 10.0) / 10.0) }
+    }
 
     fun onNameChange(value: String) =
         _uiState.update { it.copy(name = value, errorMessage = null, successMessage = null) }

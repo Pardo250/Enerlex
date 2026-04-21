@@ -126,6 +126,62 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // ── Resumen de consumo mensual ─────────────────────────────────
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = surfColor)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = "TU CONSUMO HISTÓRICO",
+                        color = textSecondary,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        letterSpacing = 1.sp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        Text(
+                            text = "${uiState.averageKwh}",
+                            color = EnerGreen,
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "kWh / mes prom.",
+                            color = textSecondary,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(bottom = 6.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    com.example.enerlex.ui.components.EnergyBarChart(
+                        readings = uiState.monthlyReadings,
+                        modifier = Modifier.fillMaxWidth().height(100.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    // Etiquetas de los meses
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        uiState.monthlyReadings.forEach { reading ->
+                            Text(
+                                text = reading.label,
+                                color = textSecondary,
+                                fontSize = 11.sp,
+                                modifier = Modifier.weight(1f),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
             // ── Editar nombre ─────────────────────────────────────────────
             Text("Editar perfil", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = textPrimary)
             Spacer(modifier = Modifier.height(10.dp))
