@@ -80,7 +80,16 @@ class RegisterViewModel : ViewModel() {
                         }
                     }
                 } else {
-                    val error = task.exception?.message ?: "Error al crear la cuenta"
+                    val error = when {
+                        task.exception?.message?.contains("email address is already in use") == true ->
+                            "Ya existe una cuenta con ese correo electrónico"
+                        task.exception?.message?.contains("badly formatted") == true ->
+                            "El formato del correo electrónico no es válido"
+                        task.exception?.message?.contains("CONFIGURATION_NOT_FOUND") == true ->
+                            "Servicio no disponible. Intenta más tarde"
+                        else ->
+                            "No se pudo crear la cuenta. Intenta de nuevo"
+                    }
                     _uiState.update { it.copy(isLoading = false, errorMessage = error) }
                 }
             }
