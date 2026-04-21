@@ -26,7 +26,9 @@ fun EnergyBarChart(
 ) {
     if (readings.isEmpty()) return
 
-    val maxWatts = readings.maxOf { it.watts }.coerceAtLeast(1f)
+    // Limitamos la escala máxima a 4000W para que la gráfica refleje cambios de altura y color reales
+    // basándose en la capacidad total de la casa. Si se pasa de 4000, entonces se escala a su máximo.
+    val maxWatts = 4000f.coerceAtLeast(readings.maxOf { it.watts }.coerceAtLeast(1f))
 
     Canvas(modifier = modifier) {
         val totalWidth = size.width
