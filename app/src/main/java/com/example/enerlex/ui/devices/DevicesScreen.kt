@@ -51,14 +51,27 @@ fun DevicesScreen(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(items = uiState.devices, key = { it.id }) { device ->
-                DeviceCard(
-                    device = device,
-                    onToggle = { viewModel.onToggleDevice(it) },
-                    onCardClick = onDeviceClick
-                )
+            if (uiState.isLoading) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                        contentAlignment = androidx.compose.ui.Alignment.Center
+                    ) {
+                        androidx.compose.material3.CircularProgressIndicator(
+                            color = com.example.enerlex.ui.theme.EnerGreen
+                        )
+                    }
+                }
+            } else {
+                items(items = uiState.devices, key = { it.id }) { device ->
+                    DeviceCard(
+                        device = device,
+                        onToggle = { viewModel.onToggleDevice(it) },
+                        onCardClick = onDeviceClick
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(8.dp)) }
             }
-            item { Spacer(modifier = Modifier.height(8.dp)) }
         }
     }
 }
