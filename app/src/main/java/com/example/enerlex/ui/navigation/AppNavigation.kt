@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -107,9 +111,16 @@ fun AppNavigation(navController: NavHostController) {
                 )
             }
 
-            // ── DASHBOARD ─────────────────────────────────────────────────
+            // ── DASHBOARD ───────────────────────────────────────────────
             composable(Screen.Dashboard.route) {
                 val vm: DashboardViewModel = viewModel()
+                val lifecycleOwner = LocalLifecycleOwner.current
+                // Recarga los datos de dispositivos cada vez que el dashboard vuelve a la pantalla
+                LaunchedEffect(lifecycleOwner) {
+                    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        vm.loadFromDevices()
+                    }
+                }
                 DashboardScreen(
                     viewModel = vm,
                     onDeviceClick = { deviceId ->
