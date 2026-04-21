@@ -23,9 +23,9 @@ class DeviceDetailViewModel(
 
     private fun loadDevice() {
         // Cargar todos los dispositivos del usuario y quedarnos con el que nos interesa
-        repository.loadDevices { devices ->
+        repository.observeDevices { devices ->
             val device = devices.find { it.id == deviceId }
-            updateStateForDevice(device, Period.DAY)
+            updateStateForDevice(device, _uiState.value.selectedPeriod)
         }
     }
 

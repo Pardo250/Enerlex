@@ -75,6 +75,26 @@ class FirestoreDeviceRepository {
         }.addOnFailureListener { onResult(emptyList()) }
     }
 
+    // ── Observar dispositivos en tiempo real ─────────────────────────────────
+    fun observeDevices(onResult: (List<Device>) -> Unit) {
+        val uid = auth.currentUser?.uid ?: run { onResult(emptyList()); return }
+        val colRef = db.collection("users").document(uid).collection("devices")
+
+        colRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                onResult(emptyList())
+                return@addSnapshotListener
+            }
+            if (snapshot != null && !snapshot.isEmpty) {
+                val devices = snapshot.documents.mapNotNull { doc -> docToDevice(doc.data) }
+                    .sortedBy { it.id }
+                onResult(devices)
+            } else if (snapshot != null && snapshot.isEmpty) {
+                initDevicesForUser(uid) { devices -> onResult(devices) }
+            }
+        }
+    }
+
     // ── Toggle ON/OFF y persistir ─────────────────────────────────────────────
     fun toggleDevice(deviceId: String, currentDevices: List<Device>, onResult: (List<Device>) -> Unit) {
         val uid = auth.currentUser?.uid ?: return

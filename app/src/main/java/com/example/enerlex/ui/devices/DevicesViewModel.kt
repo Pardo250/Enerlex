@@ -21,7 +21,7 @@ class DevicesViewModel : ViewModel() {
 
     private fun loadDevices() {
         _uiState.update { it.copy(isLoading = true) }
-        repository.loadDevices { devices ->
+        repository.observeDevices { devices ->
             _uiState.update { it.copy(devices = devices, isLoading = false) }
         }
     }

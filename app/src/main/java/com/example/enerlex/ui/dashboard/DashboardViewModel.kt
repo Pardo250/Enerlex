@@ -41,7 +41,7 @@ class DashboardViewModel : ViewModel() {
     fun loadFromDevices() {
         _uiState.update { it.copy(isLoading = true) }
 
-        deviceRepository.loadDevices { devices ->
+        deviceRepository.observeDevices { devices ->
             // ── Total kWh del día (solo dispositivos ON) ─────────────────
             val totalKwh = devices.filter { it.isOn }.sumOf { it.todayKwh }
 
