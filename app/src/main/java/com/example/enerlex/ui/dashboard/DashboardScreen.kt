@@ -45,11 +45,13 @@ fun DashboardScreen(
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         // ── Header ────────────────────────────────────────────────────────
-        Text(
-            text = "Bienvenido, Carlos",
-            color = EnerTextSecondary,
-            fontSize = 13.sp
-        )
+        if (uiState.userName.isNotEmpty()) {
+            Text(
+                text = "Bienvenido, ${uiState.userName}",
+                color = EnerTextSecondary,
+                fontSize = 13.sp
+            )
+        }
         Text(
             text = "Tu hogar",
             color = EnerTextPrimary,

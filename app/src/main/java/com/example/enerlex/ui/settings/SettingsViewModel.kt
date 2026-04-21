@@ -1,6 +1,7 @@
 package com.example.enerlex.ui.settings
 
 import androidx.lifecycle.ViewModel
+import com.example.enerlex.data.repository.UserDataRepository
 import com.example.enerlex.ui.theme.ThemeState
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 data class SettingsUiState(
-    val userName: String = FirebaseAuth.getInstance().currentUser?.displayName ?: "Usuario",
+    val userName: String = "",
     val userEmail: String = FirebaseAuth.getInstance().currentUser?.email ?: "",
     val userPlan: String = "Plan Hogar Premium",
     val consumptionLimit: Double = 15.0,
@@ -20,8 +21,16 @@ data class SettingsUiState(
 )
 
 class SettingsViewModel : ViewModel() {
+    private val userDataRepository = UserDataRepository()
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    init {
+        // Cargar nombre real desde Firestore
+        userDataRepository.getUserName { name ->
+            _uiState.update { it.copy(userName = name) }
+        }
+    }
 
     fun onToggleNotifications() {
         _uiState.update { it.copy(notificationsEnabled = !it.notificationsEnabled) }
