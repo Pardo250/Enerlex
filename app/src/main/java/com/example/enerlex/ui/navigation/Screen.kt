@@ -14,6 +14,7 @@ sealed class Screen(val route: String) {
     }
     object Alerts       : Screen("alerts")
     object Settings     : Screen("settings")
+    object Profile      : Screen("profile")
 }
 
 /** Pantallas que forman parte de la bottom nav bar */

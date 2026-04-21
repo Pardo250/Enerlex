@@ -1,6 +1,7 @@
 package com.example.enerlex.ui.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,7 +27,10 @@ import com.example.enerlex.ui.theme.*
  * Pantalla Configuración – pantalla 06 del mockup.
  */
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+    onNavigateToProfile: () -> Unit = {}
+) {
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
@@ -35,11 +40,13 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-        // ── Perfil de usuario ─────────────────────────────────────────────
+        // ── Perfil de usuario (clickeable → navega al perfil) ─────────────────────────────
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onNavigateToProfile() },
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Row(
                 modifier = Modifier.padding(20.dp),
@@ -54,23 +61,23 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = uiState.userName.first().toString(),
+                        text = uiState.userName.firstOrNull()?.toString() ?: "?",
                         color = Color(0xFF003D2E),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = uiState.userName,
-                        color = EnerTextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = uiState.userEmail,
-                        color = EnerTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp
                     )
                     Text(
@@ -80,6 +87,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                         fontWeight = FontWeight.Medium
                     )
                 }
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = "Ver perfil",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 

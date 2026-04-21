@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.example.enerlex.ui.navigation.AppNavigation
 import com.example.enerlex.ui.theme.EnerlexTheme
+import com.example.enerlex.ui.theme.ThemeState
 
 /**
  * Punto de entrada de la app EnerFlow.
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            EnerlexTheme {
+            EnerlexTheme(darkMode = ThemeState.isDarkMode) {
                 val navController = rememberNavController()
                 AppNavigation(navController = navController)
             }

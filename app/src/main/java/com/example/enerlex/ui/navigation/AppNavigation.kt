@@ -26,6 +26,8 @@ import com.example.enerlex.ui.login.RegisterScreen
 import com.example.enerlex.ui.login.RegisterViewModel
 import com.example.enerlex.ui.settings.SettingsScreen
 import com.example.enerlex.ui.settings.SettingsViewModel
+import com.example.enerlex.ui.profile.ProfileScreen
+import com.example.enerlex.ui.profile.ProfileViewModel
 import com.example.enerlex.ui.theme.EnerSurface
 import com.google.firebase.auth.FirebaseAuth
 
@@ -150,7 +152,24 @@ fun AppNavigation(navController: NavHostController) {
             // ── CONFIGURACIÓN ─────────────────────────────────────────────
             composable(Screen.Settings.route) {
                 val vm: SettingsViewModel = viewModel()
-                SettingsScreen(viewModel = vm)
+                SettingsScreen(
+                    viewModel = vm,
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
+                )
+            }
+
+            // ── PERFIL ────────────────────────────────────────────────────
+            composable(Screen.Profile.route) {
+                val vm: ProfileViewModel = viewModel()
+                ProfileScreen(
+                    viewModel = vm,
+                    onBack = { navController.popBackStack() },
+                    onAccountDeleted = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
