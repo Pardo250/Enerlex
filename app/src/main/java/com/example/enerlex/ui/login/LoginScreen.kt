@@ -191,6 +191,8 @@ fun LoginScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             // ── Continuar con Google ──────────────────────────────────────
             OutlinedButton(
                 onClick = { onLoginSuccess() },
