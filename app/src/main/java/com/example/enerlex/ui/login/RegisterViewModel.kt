@@ -65,20 +65,11 @@ class RegisterViewModel : ViewModel() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val uid = auth.currentUser?.uid ?: ""
-                    // 2. Guardar perfil en Firestore
-                    userRepository.saveUserExtraData(uid, state.name.trim(), "") { success, error ->
-                        if (success) {
-                            _uiState.update { it.copy(isLoading = false) }
-                            onSuccess()
-                        } else {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    errorMessage = error ?: "Error al guardar el perfil"
-                                )
-                            }
-                        }
-                    }
+                    // 2. Guardar perfil en Firestore en segundo plano (no bloquea la navegación)
+                    userRepository.saveUserExtraData(uid, state.name.trim(), "", null)
+                    // 3. Navegar de inmediato, sin esperar a Firestore
+                    _uiState.update { it.copy(isLoading = false) }
+                    onSuccess()
                 } else {
                     val error = when {
                         task.exception?.message?.contains("email address is already in use") == true ->
