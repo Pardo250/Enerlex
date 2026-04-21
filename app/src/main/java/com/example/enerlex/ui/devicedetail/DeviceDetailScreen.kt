@@ -1,7 +1,6 @@
 package com.example.enerlex.ui.devicedetail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,9 +25,6 @@ import com.example.enerlex.ui.components.EnergyLineChart
 import com.example.enerlex.ui.components.toIcon
 import com.example.enerlex.ui.theme.*
 
-/**
- * Pantalla de detalle de dispositivo – pantalla 04 del mockup.
- */
 @Composable
 fun DeviceDetailScreen(
     viewModel: DeviceDetailViewModel,
@@ -40,7 +36,7 @@ fun DeviceDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(EnerBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         // ── AppBar ────────────────────────────────────────────────────────
@@ -54,7 +50,7 @@ fun DeviceDetailScreen(
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Volver",
-                    tint = EnerTextPrimary
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
             Spacer(modifier = Modifier.width(4.dp))
@@ -83,7 +79,7 @@ fun DeviceDetailScreen(
                 Column {
                     Text(
                         text = device.name,
-                        color = EnerTextPrimary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -98,13 +94,12 @@ fun DeviceDetailScreen(
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = if (device.isOn) "Encendido" else "Apagado",
-                            color = if (device.isOn) EnerGreen else EnerTextSecondary,
+                            color = if (device.isOn) EnerGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 13.sp
                         )
                     }
                 }
 
-                // Botón Cortar energía
                 Button(
                     onClick = { viewModel.onToggleDevice() },
                     shape = RoundedCornerShape(10.dp),
@@ -170,13 +165,10 @@ fun DeviceDetailScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    // Selector
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Period.values().forEach { period ->
                             val isSelected = uiState.selectedPeriod == period
                             val label = when (period) {
@@ -187,13 +179,17 @@ fun DeviceDetailScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(if (isSelected) EnerGreen else EnerSurfaceElevated)
+                                    .background(
+                                        if (isSelected) EnerGreen
+                                        else MaterialTheme.colorScheme.surface
+                                    )
                                     .clickable { viewModel.onPeriodSelected(period) }
                                     .padding(horizontal = 14.dp, vertical = 6.dp)
                             ) {
                                 Text(
                                     text = label,
-                                    color = if (isSelected) Color(0xFF003D2E) else EnerTextSecondary,
+                                    color = if (isSelected) Color(0xFF003D2E)
+                                            else MaterialTheme.colorScheme.onSurfaceVariant,
                                     fontSize = 13.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                 )
@@ -203,7 +199,6 @@ fun DeviceDetailScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Gráfico
                     EnergyLineChart(
                         readings = uiState.readings,
                         lineColor = EnerGreen,
@@ -221,12 +216,12 @@ fun DeviceDetailScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "PROGRAMACIÓN",
-                            color = EnerTextSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Medium,
                             letterSpacing = 1.sp
@@ -241,13 +236,13 @@ fun DeviceDetailScreen(
                                 Icon(
                                     imageVector = Icons.Outlined.Schedule,
                                     contentDescription = null,
-                                    tint = EnerTextSecondary,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
                                     text = schedule,
-                                    color = EnerTextPrimary,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontSize = 14.sp
                                 )
                             }
@@ -277,12 +272,12 @@ private fun SectionCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = label,
-                color = EnerTextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
                 letterSpacing = 1.sp

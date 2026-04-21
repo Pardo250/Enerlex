@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,14 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.enerlex.ui.components.DeviceCard
-import com.example.enerlex.ui.theme.EnerBackground
-import com.example.enerlex.ui.theme.EnerTextPrimary
-import com.example.enerlex.ui.theme.EnerTextSecondary
 
-/**
- * Pantalla Dispositivos – pantalla 03 del mockup.
- * Lista completa de dispositivos con toggles de encendido/apagado.
- */
 @Composable
 fun DevicesScreen(
     viewModel: DevicesViewModel,
@@ -31,9 +25,8 @@ fun DevicesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(EnerBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        // ── Header ────────────────────────────────────────────────────────
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -41,28 +34,24 @@ fun DevicesScreen(
         ) {
             Text(
                 text = "Dispositivos",
-                color = EnerTextPrimary,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
             )
             val activeCount = uiState.devices.count { it.isOn }
             Text(
                 text = "$activeCount encendidos · ${uiState.devices.size} total",
-                color = EnerTextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 13.sp
             )
         }
 
-        // ── Lista ─────────────────────────────────────────────────────────
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(
-                items = uiState.devices,
-                key = { it.id }
-            ) { device ->
+            items(items = uiState.devices, key = { it.id }) { device ->
                 DeviceCard(
                     device = device,
                     onToggle = { viewModel.onToggleDevice(it) },

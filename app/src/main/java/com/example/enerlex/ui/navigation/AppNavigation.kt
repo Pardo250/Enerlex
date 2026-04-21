@@ -55,7 +55,7 @@ fun AppNavigation(navController: NavHostController) {
     }
 
     Scaffold(
-        containerColor = EnerSurface,
+        containerColor = MaterialTheme.colorScheme.surface,
         bottomBar = {
             if (currentRoute in screensWithBottomBar) {
                 EnerBottomNavBar(

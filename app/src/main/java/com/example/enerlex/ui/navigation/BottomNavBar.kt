@@ -52,11 +52,10 @@ fun EnerBottomNavBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(EnerSurface)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
-        // Línea superior sutil
         HorizontalDivider(
-            color = EnerDivider,
+            color = MaterialTheme.colorScheme.outlineVariant,
             thickness = 1.dp
         )
         Row(
@@ -95,7 +94,7 @@ private fun EnerNavItem(
         Icon(
             imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
             contentDescription = item.label,
-            tint = if (isSelected) EnerGreen else EnerTextSecondary,
+            tint = if (isSelected) EnerGreen else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.height(2.dp))
@@ -103,7 +102,7 @@ private fun EnerNavItem(
             text = item.label,
             fontSize = 10.sp,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-            color = if (isSelected) EnerGreen else EnerTextSecondary
+            color = if (isSelected) EnerGreen else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

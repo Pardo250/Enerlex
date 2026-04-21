@@ -28,10 +28,6 @@ import com.example.enerlex.data.model.Device
 import com.example.enerlex.data.model.DeviceIcon
 import com.example.enerlex.ui.theme.*
 
-/**
- * Tarjeta de dispositivo usada en la lista de Dispositivos.
- * Muestra nombre, sala, consumo actual, kWh hoy y un toggle de encendido.
- */
 @Composable
 fun DeviceCard(
     device: Device,
@@ -40,9 +36,9 @@ fun DeviceCard(
     modifier: Modifier = Modifier
 ) {
     val indicatorColor = when {
-        !device.isOn -> EnerDeviceGray
+        !device.isOn           -> EnerDeviceGray
         device.currentWatts > 300 -> EnerDeviceYellow
-        else -> EnerDeviceGreen
+        else                   -> EnerDeviceGreen
     }
 
     Card(
@@ -50,7 +46,7 @@ fun DeviceCard(
             .fillMaxWidth()
             .clickable { onCardClick(device.id) },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
@@ -59,7 +55,6 @@ fun DeviceCard(
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Indicador de estado (círculo de color)
             Box(
                 modifier = Modifier
                     .size(10.dp)
@@ -69,21 +64,19 @@ fun DeviceCard(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Icono del dispositivo
             Icon(
                 imageVector = device.iconType.toIcon(),
                 contentDescription = device.name,
-                tint = if (device.isOn) EnerGreen else EnerTextSecondary,
+                tint = if (device.isOn) EnerGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(22.dp)
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Nombre y datos
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = device.name,
-                    color = EnerTextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -91,27 +84,26 @@ fun DeviceCard(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = if (device.isOn) "${device.currentWatts}W" else "0W",
-                        color = if (device.isOn) EnerGreen else EnerTextSecondary,
+                        color = if (device.isOn) EnerGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "· ${device.todayKwh} kWh hoy",
-                        color = EnerTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 }
             }
 
-            // Toggle
             Switch(
                 checked = device.isOn,
                 onCheckedChange = { onToggle(device.id) },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
                     checkedTrackColor = EnerGreen,
-                    uncheckedThumbColor = EnerTextSecondary,
-                    uncheckedTrackColor = EnerSurfaceElevated
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             )
         }
