@@ -42,9 +42,11 @@ fun EnergyBarChart(
             val x = index * (barWidth + gap)
             val y = totalHeight - normalizedHeight
 
+            // Colores basados en el consumo real absoluto.
+            // "Excesivo" se considera más de 3500W, y "Alto" más de 2000W.
             val barColor: Color = when {
-                reading.watts / maxWatts > 0.75f -> EnerBarPeak
-                reading.watts / maxWatts > 0.45f -> EnerBarHigh
+                reading.watts > 3500f -> EnerBarPeak
+                reading.watts > 2000f -> EnerBarHigh
                 else -> EnerBarNormal
             }
 
