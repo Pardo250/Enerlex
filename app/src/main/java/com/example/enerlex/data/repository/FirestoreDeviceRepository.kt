@@ -55,6 +55,23 @@ class FirestoreDeviceRepository {
         mapOf(
             "id" to "8", "name" to "Aire Acondicionado", "room" to "Habitación",
             "isOn" to false, "nominalWatts" to 1500,  "iconType" to "AC"
+        ),
+        mapOf(
+            "id" to "9", "name" to "Cafetera",        "room" to "Cocina",
+            "isOn" to false, "nominalWatts" to 800,   "iconType" to "OTHER"
+        ),
+        mapOf(
+            "id" to "10", "name" to "Consola Juegos", "room" to "Sala",
+            "isOn" to true,  "nominalWatts" to 250,   "iconType" to "OTHER",
+            "schedule" to "18:00 - 22:00 · L-D"
+        ),
+        mapOf(
+            "id" to "11", "name" to "Secadora",       "room" to "Lavandería",
+            "isOn" to false, "nominalWatts" to 2500,  "iconType" to "OTHER"
+        ),
+        mapOf(
+            "id" to "12", "name" to "Freidora de Aire", "room" to "Cocina",
+            "isOn" to false, "nominalWatts" to 1500,  "iconType" to "OTHER"
         )
     )
 
@@ -87,7 +104,14 @@ class FirestoreDeviceRepository {
             }
             if (snapshot != null && !snapshot.isEmpty) {
                 val devices = snapshot.documents.mapNotNull { doc -> docToDevice(doc.data) }
-                    .sortedBy { it.id }
+                    .sortedBy { it.id.toIntOrNull() ?: 0 }
+                
+                // Add any newly pushed catalogue devices to existing users
+                val missing = defaultDevices.filter { def -> devices.none { it.id == def["id"] } }
+                if (missing.isNotEmpty()) {
+                    addMissingDevices(uid, missing)
+                }
+
                 onResult(devices)
             } else if (snapshot != null && snapshot.isEmpty) {
                 initDevicesForUser(uid) { devices -> onResult(devices) }
@@ -174,6 +198,30 @@ class FirestoreDeviceRepository {
         batch.commit().addOnCompleteListener { onResult(devices) }
     }
 
+    private fun addMissingDevices(uid: String, missing: List<Map<String, Any?>>) {
+        val batch = db.batch()
+        val colRef = db.collection("users").document(uid).collection("devices")
+        missing.forEach { d ->
+            val isOn     = d["isOn"] as Boolean
+            val nominal  = (d["nominalWatts"] as Int)
+            val watts    = if (isOn) nominal else 0
+            val kwh      = calculateTodayKwh(watts)
+            val doc = mapOf(
+                "id"           to d["id"],
+                "name"         to d["name"],
+                "room"         to d["room"],
+                "isOn"         to isOn,
+                "nominalWatts" to nominal,
+                "currentWatts" to watts,
+                "todayKwh"     to kwh,
+                "iconType"     to d["iconType"],
+                "schedule"     to (d["schedule"] ?: null)
+            )
+            batch.set(colRef.document(d["id"] as String), doc)
+        }
+        batch.commit()
+    }
+
     private fun docToDevice(data: Map<String, Any?>?): Device? {
         if (data == null) return null
         return try {
@@ -204,16 +252,22 @@ class FirestoreDeviceRepository {
     }
 
     /** Nomina vatios por tipo, para restaurar al encender */
-    private fun nominalWatts(device: Device): Int = when (device.iconType) {
-        DeviceIcon.TV           -> 150
-        DeviceIcon.REFRIGERATOR -> 150
-        DeviceIcon.COMPUTER     -> 200
-        DeviceIcon.LAMP         -> 12
-        DeviceIcon.MICROWAVE    -> 1200
-        DeviceIcon.FAN          -> 70
-        DeviceIcon.WASHER       -> 500
-        DeviceIcon.AC           -> 1500
-        DeviceIcon.OTHER        -> 100
+    private fun nominalWatts(device: Device): Int = when (device.name) {
+        "Cafetera" -> 800
+        "Consola Juegos" -> 250
+        "Secadora" -> 2500
+        "Freidora de Aire" -> 1500
+        else -> when (device.iconType) {
+            DeviceIcon.TV           -> 150
+            DeviceIcon.REFRIGERATOR -> 150
+            DeviceIcon.COMPUTER     -> 200
+            DeviceIcon.LAMP         -> 12
+            DeviceIcon.MICROWAVE    -> 1200
+            DeviceIcon.FAN          -> 70
+            DeviceIcon.WASHER       -> 500
+            DeviceIcon.AC           -> 1500
+            DeviceIcon.OTHER        -> 100
+        }
     }
 
     /** kWh hoy = (watts × horas encendido) / 1000 — asumimos 8h de uso promedio */
