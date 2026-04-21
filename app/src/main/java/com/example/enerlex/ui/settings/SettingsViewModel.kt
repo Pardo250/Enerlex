@@ -33,4 +33,9 @@ class SettingsViewModel : ViewModel() {
         ThemeState.isDarkMode = newValue
         _uiState.update { it.copy(darkModeEnabled = newValue) }
     }
+
+    /** Cierra la sesión del usuario en Firebase */
+    fun onSignOut() {
+        FirebaseAuth.getInstance().signOut()
+    }
 }

@@ -154,7 +154,12 @@ fun AppNavigation(navController: NavHostController) {
                 val vm: SettingsViewModel = viewModel()
                 SettingsScreen(
                     viewModel = vm,
-                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
+                    onSignOut = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
                 )
             }
 

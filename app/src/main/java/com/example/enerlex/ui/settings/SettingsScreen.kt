@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,7 +30,8 @@ import com.example.enerlex.ui.theme.*
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToProfile: () -> Unit = {},
+    onSignOut: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -146,6 +148,36 @@ fun SettingsScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // ── Cerrar sesión ─────────────────────────────────────────────────
+        OutlinedButton(
+            onClick = {
+                viewModel.onSignOut()
+                onSignOut()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(14.dp),
+            border = ButtonDefaults.outlinedButtonBorder.copy(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = EnerRed
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ExitToApp,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Cerrar sesión",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
