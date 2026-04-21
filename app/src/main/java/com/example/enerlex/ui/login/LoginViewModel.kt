@@ -40,10 +40,11 @@ class LoginViewModel(private val repository: AuthRepository = AuthRepository()) 
         repository.signIn(email, password, object : AuthRepository.AuthCallback {
             override fun onResult(success: Boolean, errorMessage: String?) {
                 if (success) {
+                    _uiState.update { it.copy(isLoading = false) }
                     onSuccess()
                 } else {
                     _uiState.update { it.copy(
-                        errorMessage = errorMessage ?: "Error desconocido",
+                        errorMessage = "Usuario o contraseña incorrectos",
                         isLoading = false
                     )}
                 }
