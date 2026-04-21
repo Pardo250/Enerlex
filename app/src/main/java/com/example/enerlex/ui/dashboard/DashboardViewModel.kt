@@ -67,28 +67,49 @@ class DashboardViewModel : ViewModel() {
                 .sortedByDescending { it.currentWatts }
                 .take(2)
 
-            // ── Alerta: dispositivo de mayor consumo ──────────────────────
-            val worstDevice = devices.filter { it.isOn }
-                .maxByOrNull { it.currentWatts }
+            // ── Alertas Inteligentes basadas en consumo global y dispositivos conectados ──
+            val totalCurrentWatts = devices.filter { it.isOn }.sumOf { it.currentWatts }
+            val activeDevicesCount = devices.count { it.isOn }
+            val worstDevice = devices.filter { it.isOn }.maxByOrNull { it.currentWatts }
 
-            val alert = worstDevice?.let {
-                val msg = when {
-                    it.currentWatts >= 1000 -> "Consumo muy alto: ${it.currentWatts}W"
-                    it.currentWatts >= 300  -> "Consumo 40% sobre el límite"
-                    else                    -> "Encendido más de 8 horas"
+            val alert = when {
+                totalCurrentWatts >= 3500 -> {
+                    Alert(
+                        id = "dash_alert_global_crit",
+                        deviceName = "Sistema Global",
+                        message = "¡Sobrecarga térmica! $activeDevicesCount dispositivos encendidos ($totalCurrentWatts W)",
+                        timeAgo = "Ahora mismo",
+                        severity = AlertSeverity.CRITICAL
+                    )
                 }
-                val severity = when {
-                    it.currentWatts >= 1000 -> AlertSeverity.CRITICAL
-                    it.currentWatts >= 300  -> AlertSeverity.WARNING
-                    else                    -> AlertSeverity.INFO
+                totalCurrentWatts >= 2000 -> {
+                    Alert(
+                        id = "dash_alert_global_warn",
+                        deviceName = "Sistema Global",
+                        message = "Consumo total alto ($totalCurrentWatts W)",
+                        timeAgo = "Hace un momento",
+                        severity = AlertSeverity.WARNING
+                    )
                 }
-                Alert(
-                    id         = "dash_alert",
-                    deviceName = it.name,
-                    message    = msg,
-                    timeAgo    = "Hace 15 min",
-                    severity   = severity
-                )
+                worstDevice != null && worstDevice.currentWatts >= 1000 -> {
+                    Alert(
+                        id = "dash_alert_device_warn",
+                        deviceName = worstDevice.name,
+                        message = "Consumo individual elevado: ${worstDevice.currentWatts}W",
+                        timeAgo = "Hace 10 min",
+                        severity = AlertSeverity.WARNING
+                    )
+                }
+                worstDevice != null && worstDevice.currentWatts >= 300 -> {
+                    Alert(
+                        id = "dash_alert_device_info",
+                        deviceName = worstDevice.name,
+                        message = "Uso continuo de energía (${worstDevice.currentWatts}W)",
+                        timeAgo = "Hace 15 min",
+                        severity = AlertSeverity.INFO
+                    )
+                }
+                else -> null
             }
 
             _uiState.update {
