@@ -120,7 +120,7 @@ fun DashboardScreen(
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
-                    text = "ÚLTIMAS 24 HORAS",
+                    text = "CONSUMO POR DISPOSITIVO",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,

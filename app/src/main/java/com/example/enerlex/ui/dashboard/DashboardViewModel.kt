@@ -45,20 +45,15 @@ class DashboardViewModel : ViewModel() {
             // ── Total kWh del día (solo dispositivos ON) ─────────────────
             val totalKwh = devices.filter { it.isOn }.sumOf { it.todayKwh }
 
-            // ── Gráfica 24h: suma de watts por hora ───────────────────────
-            val readings = (0..23).map { h ->
-                val totalWatts = devices.filter { it.isOn }.sumOf { device ->
-                    val factor = when (h) {
-                        in 0..5   -> 0.3
-                        in 6..8   -> 0.7
-                        in 9..12  -> 0.9
-                        in 13..17 -> 1.0
-                        in 18..21 -> 0.85
-                        else      -> 0.5
-                    }
-                    device.currentWatts * factor
-                }
-                EnergyReading(h, totalWatts.toFloat(), "${h}h")
+            // ── Gráfica: consumo actual por dispositivo encendido ───────────────────────
+            val connectedDevices = devices.filter { it.isOn }
+            val readings = connectedDevices.mapIndexed { index, device ->
+                EnergyReading(
+                    hour = index,
+                    watts = device.currentWatts.toFloat(),
+                    label = device.name,
+                    topDevice = device.name
+                )
             }
 
             // ── Top 2 dispositivos encendidos por mayor consumo ───────────
