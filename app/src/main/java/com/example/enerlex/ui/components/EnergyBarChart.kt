@@ -32,9 +32,15 @@ fun EnergyBarChart(
 ) {
     if (readings.isEmpty()) return
 
+<<<<<<< HEAD
     val maxWatts = readings.maxOf { it.watts }.coerceAtLeast(1f)
     val totalWatts = readings.sumOf { it.watts.toDouble() }.toFloat().coerceAtLeast(1f)
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
+=======
+    // Limitamos la escala máxima a 4000W para que la gráfica refleje cambios de altura y color reales
+    // basándose en la capacidad total de la casa. Si se pasa de 4000, entonces se escala a su máximo.
+    val maxWatts = 4000f.coerceAtLeast(readings.maxOf { it.watts }.coerceAtLeast(1f))
+>>>>>>> c19800946ad8a1e5b130161d714ccd72d5dad6e7
 
     BoxWithConstraints(modifier = modifier) {
         val barCount = readings.size
@@ -70,6 +76,7 @@ fun EnergyBarChart(
             val gapPx = gap.toPx()
             val barWidthPx = (canvasWidth - gapPx * (barCount - 1)) / barCount
 
+<<<<<<< HEAD
             readings.forEachIndexed { index, reading ->
                 val normalizedHeight = (reading.watts / maxWatts) * canvasHeight
                 val x = index * (barWidthPx + gapPx)
@@ -89,6 +96,14 @@ fun EnergyBarChart(
                     size = Size(barWidthPx, normalizedHeight),
                     cornerRadius = CornerRadius(3.dp.toPx(), 3.dp.toPx())
                 )
+=======
+            // Colores basados en el consumo real absoluto.
+            // "Excesivo" se considera más de 3500W, y "Alto" más de 2000W.
+            val barColor: Color = when {
+                reading.watts > 3500f -> EnerBarPeak
+                reading.watts > 2000f -> EnerBarHigh
+                else -> EnerBarNormal
+>>>>>>> c19800946ad8a1e5b130161d714ccd72d5dad6e7
             }
         }
 

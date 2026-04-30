@@ -40,19 +40,21 @@ fun DashboardScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(EnerBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         // ── Header ────────────────────────────────────────────────────────
-        Text(
-            text = "Bienvenido, Carlos",
-            color = EnerTextSecondary,
-            fontSize = 13.sp
-        )
+        if (uiState.userName.isNotEmpty()) {
+            Text(
+                text = "Bienvenido, ${uiState.userName}",
+                color = EnerTextSecondary,
+                fontSize = 13.sp
+            )
+        }
         Text(
             text = "Tu hogar",
-            color = EnerTextPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
@@ -63,12 +65,12 @@ fun DashboardScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = EnerSurnaceVariantCard)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
                     text = "CONSUMO TOTAL HOY",
-                    color = EnerTextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 1.sp
@@ -85,7 +87,7 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "kWh",
-                        color = EnerTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 18.sp,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
@@ -114,12 +116,12 @@ fun DashboardScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = EnerSurnaceVariantCard)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
                     text = "ÚLTIMAS 24 HORAS",
-                    color = EnerTextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 1.sp
@@ -173,7 +175,7 @@ private fun TopDeviceChip(
     Card(
         modifier = modifier.clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = EnerSurnaceVariantCard)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -192,7 +194,7 @@ private fun TopDeviceChip(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = device.name, color = EnerTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = device.name, color = MaterialTheme.colorScheme.onSurface, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
             Text(
                 text = "${device.currentWatts}W",
                 color = dotColor,

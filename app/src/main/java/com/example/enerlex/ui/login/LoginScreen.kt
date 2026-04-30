@@ -31,7 +31,8 @@ import com.example.enerlex.ui.theme.*
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
+    onNavigateToRegister: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -173,21 +174,24 @@ fun LoginScreen(
             // ── Botón Iniciar Sesión ──────────────────────────────────────
             Button(
                 onClick = { viewModel.onLogin(onSuccess = onLoginSuccess) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
+                enabled = !uiState.isLoading, // Desactiva el botón mientras carga
+                modifier = Modifier.fillMaxWidth().height(52.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = EnerGreen)
             ) {
-                Text(
-                    text = "Iniciar sesión",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF003D2E)
-                )
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(color = Color(0xFF003D2E), modifier = Modifier.size(24.dp))
+                } else {
+                    Text(
+                        text = "Iniciar sesión",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF003D2E)
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // ── Continuar con Google ──────────────────────────────────────
             OutlinedButton(
@@ -223,7 +227,7 @@ fun LoginScreen(
                     color = EnerTextSecondary,
                     fontSize = 14.sp
                 )
-                TextButton(onClick = {}) {
+                TextButton(onClick = onNavigateToRegister) {
                     Text(
                         text = "Crear cuenta",
                         color = EnerGreen,

@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,10 +20,6 @@ import com.example.enerlex.data.model.Alert
 import com.example.enerlex.data.model.AlertSeverity
 import com.example.enerlex.ui.theme.*
 
-/**
- * Pantalla Alertas – pantalla 05 del mockup.
- * Lista de alertas con nivel de severidad y sección de recomendaciones.
- */
 @Composable
 fun AlertsScreen(viewModel: AlertsViewModel) {
     val uiState by viewModel.uiState.collectAsState()
@@ -32,9 +27,8 @@ fun AlertsScreen(viewModel: AlertsViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(EnerBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        // ── Header ────────────────────────────────────────────────────────
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -42,13 +36,13 @@ fun AlertsScreen(viewModel: AlertsViewModel) {
         ) {
             Text(
                 text = "Alertas",
-                color = EnerTextPrimary,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = "${uiState.alerts.size} alertas activas",
-                color = EnerTextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 13.sp
             )
         }
@@ -58,18 +52,16 @@ fun AlertsScreen(viewModel: AlertsViewModel) {
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // Alertas
             items(uiState.alerts, key = { it.id }) { alert ->
                 AlertCard(alert = alert)
             }
 
-            // Recomendaciones
             if (uiState.recommendations.isNotEmpty()) {
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "RECOMENDACIONES",
-                        color = EnerTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Medium,
                         letterSpacing = 1.sp
@@ -92,19 +84,18 @@ private fun AlertCard(alert: Alert) {
         AlertSeverity.CRITICAL -> EnerRed
         AlertSeverity.WARNING  -> EnerYellow
         AlertSeverity.INFO     -> EnerGreen
-        AlertSeverity.SYSTEM   -> EnerTextSecondary
+        AlertSeverity.SYSTEM   -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Barra lateral de color
             Box(
                 modifier = Modifier
                     .width(4.dp)
@@ -116,20 +107,20 @@ private fun AlertCard(alert: Alert) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = alert.deviceName,
-                    color = EnerTextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = alert.message,
-                    color = EnerTextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 13.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = alert.timeAgo,
-                    color = EnerTextHint,
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 11.sp
                 )
             }

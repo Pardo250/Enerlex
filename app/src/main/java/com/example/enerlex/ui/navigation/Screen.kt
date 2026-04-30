@@ -6,6 +6,7 @@ package com.example.enerlex.ui.navigation
  */
 sealed class Screen(val route: String) {
     object Login        : Screen("login")
+    object Register     : Screen("register")
     object Dashboard    : Screen("dashboard")
     object Devices      : Screen("devices")
     object DeviceDetail : Screen("device_detail/{deviceId}") {
@@ -13,6 +14,7 @@ sealed class Screen(val route: String) {
     }
     object Alerts       : Screen("alerts")
     object Settings     : Screen("settings")
+    object Profile      : Screen("profile")
 }
 
 /** Pantallas que forman parte de la bottom nav bar */

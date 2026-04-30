@@ -2,8 +2,8 @@ package com.example.enerlex.ui.devicedetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.enerlex.data.repository.DeviceRepository
-import com.example.enerlex.data.repository.DeviceRepositoryImpl
+import com.example.enerlex.data.model.Device
+import com.example.enerlex.data.repository.FirestoreDeviceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 
 class DeviceDetailViewModel(
     private val deviceId: String,
-    private val repository: DeviceRepository = DeviceRepositoryImpl()
+    private val repository: FirestoreDeviceRepository = FirestoreDeviceRepository()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DeviceDetailUiState())
@@ -22,36 +22,51 @@ class DeviceDetailViewModel(
     }
 
     private fun loadDevice() {
-        val device = repository.getDeviceById(deviceId)
-        val readings = repository.getLast24HoursReadings()
-        // Costo estimado: kwh * $650 (tarifa ejemplo Colombia)
-        val cost = (device?.todayKwh ?: 0.0) * 650
+        // Cargar todos los dispositivos del usuario y quedarnos con el que nos interesa
+        repository.observeDevices { devices ->
+            val device = devices.find { it.id == deviceId }
+            updateStateForDevice(device, _uiState.value.selectedPeriod)
+        }
+    }
+
+    private fun updateStateForDevice(device: Device?, period: Period) {
+        if (device == null) return
+        val readings = when (period) {
+            Period.DAY   -> repository.getReadingsForDevice(device)
+            Period.WEEK  -> repository.getWeekReadingsForDevice(device)
+            Period.MONTH -> repository.getWeekReadingsForDevice(device) // placeholder mes
+        }
+        // Costo estimado: kWh × $650 (tarifa Colombia aproximada)
+        val cost = device.todayKwh * 650.0
 
         _uiState.update {
             it.copy(
                 device = device,
                 readings = readings,
-                estimatedCostToday = cost
+                estimatedCostToday = cost,
+                selectedPeriod = period
             )
         }
     }
 
     fun onToggleDevice() {
-        val deviceId = _uiState.value.device?.id ?: return
-        val updated = repository.toggleDevice(deviceId)
-        _uiState.update { it.copy(device = updated.find { d -> d.id == deviceId }) }
+        val current = _uiState.value.device ?: return
+        val deviceList = listOfNotNull(current) + emptyList<Device>()
+
+        // Primero cargar todos para tener la lista completa (necesaria para el repositorio)
+        repository.loadDevices { allDevices ->
+            repository.toggleDevice(current.id, allDevices) { updatedList ->
+                val updated = updatedList.find { it.id == current.id }
+                updateStateForDevice(updated, _uiState.value.selectedPeriod)
+            }
+        }
     }
 
     fun onPeriodSelected(period: Period) {
-        val readings = when (period) {
-            Period.DAY   -> repository.getLast24HoursReadings()
-            Period.WEEK  -> repository.getWeekReadings()
-            Period.MONTH -> repository.getWeekReadings() // Placeholder
-        }
-        _uiState.update { it.copy(selectedPeriod = period, readings = readings) }
+        val device = _uiState.value.device ?: return
+        updateStateForDevice(device, period)
     }
 
-    /** Factory para pasar deviceId al ViewModel */
     class Factory(private val deviceId: String) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")

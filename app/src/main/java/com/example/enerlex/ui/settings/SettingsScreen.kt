@@ -1,6 +1,7 @@
 package com.example.enerlex.ui.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -8,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,21 +28,27 @@ import com.example.enerlex.ui.theme.*
  * Pantalla Configuración – pantalla 06 del mockup.
  */
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+    onNavigateToProfile: () -> Unit = {},
+    onSignOut: () -> Unit = {}
+) {
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(EnerBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-        // ── Perfil de usuario ─────────────────────────────────────────────
+        // ── Perfil de usuario (clickeable → navega al perfil) ─────────────────────────────
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onNavigateToProfile() },
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Row(
                 modifier = Modifier.padding(20.dp),
@@ -54,23 +63,23 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = uiState.userName.first().toString(),
+                        text = uiState.userName.firstOrNull()?.toString() ?: "?",
                         color = Color(0xFF003D2E),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = uiState.userName,
-                        color = EnerTextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = uiState.userEmail,
-                        color = EnerTextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp
                     )
                     Text(
@@ -80,6 +89,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                         fontWeight = FontWeight.Medium
                     )
                 }
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = "Ver perfil",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
@@ -134,6 +148,36 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // ── Cerrar sesión ─────────────────────────────────────────────────
+        OutlinedButton(
+            onClick = {
+                viewModel.onSignOut()
+                onSignOut()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(14.dp),
+            border = ButtonDefaults.outlinedButtonBorder.copy(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = EnerRed
+            )
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ExitToApp,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+                text = "Cerrar sesión",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
@@ -142,7 +186,7 @@ private fun SettingsSection(content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = EnerSurfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(vertical = 4.dp), content = content)
     }
@@ -158,13 +202,13 @@ private fun SettingsItemArrow(title: String, subtitle: String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, color = EnerTextPrimary, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-            Text(text = subtitle, color = EnerTextSecondary, fontSize = 12.sp)
+            Text(text = title, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+            Text(text = subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
         Icon(
             imageVector = Icons.Filled.ChevronRight,
             contentDescription = null,
-            tint = EnerTextSecondary,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp)
         )
     }
@@ -185,8 +229,8 @@ private fun SettingsItemToggle(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, color = EnerTextPrimary, fontSize = 15.sp, fontWeight = FontWeight.Medium)
-            Text(text = subtitle, color = EnerTextSecondary, fontSize = 12.sp)
+            Text(text = title, color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Medium)
+            Text(text = subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
         Switch(
             checked = checked,
@@ -194,8 +238,8 @@ private fun SettingsItemToggle(
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
                 checkedTrackColor = EnerGreen,
-                uncheckedThumbColor = EnerTextSecondary,
-                uncheckedTrackColor = EnerSurfaceElevated
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
             )
         )
     }

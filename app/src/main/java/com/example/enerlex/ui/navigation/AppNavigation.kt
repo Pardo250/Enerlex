@@ -1,10 +1,15 @@
 package com.example.enerlex.ui.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -22,9 +27,14 @@ import com.example.enerlex.ui.devices.DevicesScreen
 import com.example.enerlex.ui.devices.DevicesViewModel
 import com.example.enerlex.ui.login.LoginScreen
 import com.example.enerlex.ui.login.LoginViewModel
+import com.example.enerlex.ui.login.RegisterScreen
+import com.example.enerlex.ui.login.RegisterViewModel
 import com.example.enerlex.ui.settings.SettingsScreen
 import com.example.enerlex.ui.settings.SettingsViewModel
+import com.example.enerlex.ui.profile.ProfileScreen
+import com.example.enerlex.ui.profile.ProfileViewModel
 import com.example.enerlex.ui.theme.EnerSurface
+import com.google.firebase.auth.FirebaseAuth
 
 private val screensWithBottomBar = setOf(
     Screen.Dashboard.route,
@@ -35,14 +45,22 @@ private val screensWithBottomBar = setOf(
 
 /**
  * Punto central de navegación. Gestiona el NavHost y la bottom bar.
+ * Si el usuario ya tiene sesión activa, salta directamente al Dashboard.
  */
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    // Determina la pantalla de inicio según si hay sesión activa
+    val startDestination = if (FirebaseAuth.getInstance().currentUser != null) {
+        Screen.Dashboard.route
+    } else {
+        Screen.Login.route
+    }
+
     Scaffold(
-        containerColor = EnerSurface,
+        containerColor = MaterialTheme.colorScheme.surface,
         bottomBar = {
             if (currentRoute in screensWithBottomBar) {
                 EnerBottomNavBar(
@@ -60,7 +78,7 @@ fun AppNavigation(navController: NavHostController) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Login.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
             // ── LOGIN ─────────────────────────────────────────────────────
@@ -72,13 +90,37 @@ fun AppNavigation(navController: NavHostController) {
                         navController.navigate(Screen.Dashboard.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
+                    },
+                    onNavigateToRegister = {
+                        navController.navigate(Screen.Register.route)
                     }
                 )
             }
 
-            // ── DASHBOARD ─────────────────────────────────────────────────
+            // ── REGISTRO ──────────────────────────────────────────────────
+            composable(Screen.Register.route) {
+                val vm: RegisterViewModel = viewModel()
+                RegisterScreen(
+                    viewModel = vm,
+                    onRegisterSuccess = {
+                        navController.navigate(Screen.Dashboard.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            // ── DASHBOARD ───────────────────────────────────────────────
             composable(Screen.Dashboard.route) {
                 val vm: DashboardViewModel = viewModel()
+                val lifecycleOwner = LocalLifecycleOwner.current
+                // Recarga los datos de dispositivos cada vez que el dashboard vuelve a la pantalla
+                LaunchedEffect(lifecycleOwner) {
+                    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        vm.loadFromDevices()
+                    }
+                }
                 DashboardScreen(
                     viewModel = vm,
                     onDeviceClick = { deviceId ->
@@ -122,7 +164,29 @@ fun AppNavigation(navController: NavHostController) {
             // ── CONFIGURACIÓN ─────────────────────────────────────────────
             composable(Screen.Settings.route) {
                 val vm: SettingsViewModel = viewModel()
-                SettingsScreen(viewModel = vm)
+                SettingsScreen(
+                    viewModel = vm,
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
+                    onSignOut = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            // ── PERFIL ────────────────────────────────────────────────────
+            composable(Screen.Profile.route) {
+                val vm: ProfileViewModel = viewModel()
+                ProfileScreen(
+                    viewModel = vm,
+                    onBack = { navController.popBackStack() },
+                    onAccountDeleted = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
