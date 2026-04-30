@@ -2,15 +2,18 @@ package com.example.enerlex.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,6 +22,7 @@ import com.example.enerlex.data.model.EnergyReading
 import com.example.enerlex.ui.theme.EnerBarHigh
 import com.example.enerlex.ui.theme.EnerBarNormal
 import com.example.enerlex.ui.theme.EnerBarPeak
+import com.example.enerlex.ui.theme.EnerGreen
 
 /**
  * Gráfico de barras para el consumo de las últimas 24 horas.
@@ -51,7 +55,13 @@ fun EnergyBarChart(
                             val event = awaitPointerEvent()
                             val change = event.changes.firstOrNull()
                             if (change != null) {
-                                if (change.pressed) {
+                                val isHoverOrPress = change.pressed ||
+                                        event.type == PointerEventType.Move ||
+                                        event.type == PointerEventType.Enter
+
+                                val isExit = event.type == PointerEventType.Exit
+
+                                if (isHoverOrPress && !isExit) {
                                     val x = change.position.x
                                     val gapPx = gap.toPx()
                                     val barWidthPx = (size.width - gapPx * (barCount - 1)) / barCount
@@ -59,7 +69,7 @@ fun EnergyBarChart(
                                     if (index in readings.indices) {
                                         selectedIndex = index
                                     }
-                                } else {
+                                } else if (isExit || (!change.pressed && event.type == PointerEventType.Release)) {
                                     selectedIndex = null
                                 }
                             }
@@ -105,26 +115,44 @@ fun EnergyBarChart(
             val barWidthDp = (maxWidth - gap * (barCount - 1)) / barCount
             val xOffset = (index * (barWidthDp.value + gap.value)).dp
 
+            val tooltipWidth = 85.dp
             val normalizedHeight = (reading.watts / maxWatts) * maxHeight.value
-            var yOffset = (maxHeight.value - normalizedHeight).dp - 28.dp
+            var yOffset = (maxHeight.value - normalizedHeight).dp - 48.dp
             if (yOffset < 0.dp) yOffset = 0.dp
 
-            var finalXOffset = xOffset + barWidthDp / 2 - 20.dp
+            var finalXOffset = xOffset + barWidthDp / 2 - tooltipWidth / 2
             if (finalXOffset < 0.dp) finalXOffset = 0.dp
-            if (finalXOffset > maxWidth - 40.dp) finalXOffset = maxWidth - 40.dp
+            if (finalXOffset > maxWidth - tooltipWidth) finalXOffset = maxWidth - tooltipWidth
 
             Box(
                 modifier = Modifier
                     .offset(x = finalXOffset, y = yOffset)
-                    .background(Color(0xFF2C2F33), RoundedCornerShape(6.dp))
-                    .padding(horizontal = 6.dp, vertical = 4.dp)
+                    .widthIn(min = tooltipWidth)
+                    .background(Color(0xFF2C2F33), RoundedCornerShape(8.dp))
+                    .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = String.format("%.1f%%", percentage),
-                    color = Color.White,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = String.format("%.1f%% (%.0fW)", percentage, reading.watts),
+                        color = EnerGreen,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                    reading.topDevice?.let { deviceName ->
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = deviceName,
+                            color = Color.LightGray,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1
+                        )
+                    }
+                }
             }
         }
     }

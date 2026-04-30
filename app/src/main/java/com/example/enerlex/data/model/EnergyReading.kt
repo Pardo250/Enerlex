@@ -6,5 +6,6 @@ package com.example.enerlex.data.model
 data class EnergyReading(
     val hour: Int,         // 0-23
     val watts: Float,      // Consumo en ese momento
-    val label: String      // Etiqueta visible (ej. "14h")
+    val label: String,     // Etiqueta visible (ej. "14h")
+    val topDevice: String? = null // Dispositivo con mayor consumo en este periodo (opcional)
 )
