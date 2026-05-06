@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.example.enerlex.ui.theme.ThemeState
 
 data class SettingsUiState(
     val userName: String = "",
@@ -117,7 +118,11 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun onToggleDarkMode() {
-        _uiState.update { it.copy(darkModeEnabled = !it.darkModeEnabled) }
+        _uiState.update { 
+            val newDarkMode = !it.darkModeEnabled
+            ThemeState.isDarkMode = newDarkMode
+            it.copy(darkModeEnabled = newDarkMode) 
+        }
     }
 
     fun onSignOut() {
