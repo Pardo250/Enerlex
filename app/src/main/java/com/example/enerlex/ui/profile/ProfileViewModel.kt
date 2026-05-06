@@ -1,6 +1,7 @@
 package com.example.enerlex.ui.profile
 
 import androidx.lifecycle.ViewModel
+import com.example.enerlex.data.repository.ProfilePhotoRepository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,18 +20,24 @@ data class ProfileUiState(
     val errorMessage: String? = null,
     val showDeleteDialog: Boolean = false,
     val monthlyReadings: List<com.example.enerlex.data.model.EnergyReading> = emptyList(),
-    val averageKwh: Double = 0.0
+    val averageKwh: Double = 0.0,
+    val profilePhotoUrl: String? = null   // URL de Firebase Storage
 )
 
 class ProfileViewModel : ViewModel() {
-    private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+    private val auth             = FirebaseAuth.getInstance()
+    private val db               = FirebaseFirestore.getInstance()
+    private val profilePhotoRepo = ProfilePhotoRepository()
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
         loadMonthlyData()
+        // Cargar foto de perfil desde Firestore/Storage
+        profilePhotoRepo.getProfilePhotoUrl { url ->
+            _uiState.update { it.copy(profilePhotoUrl = url) }
+        }
     }
 
     private fun loadMonthlyData() {

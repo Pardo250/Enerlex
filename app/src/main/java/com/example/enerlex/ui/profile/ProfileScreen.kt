@@ -1,6 +1,7 @@
 package com.example.enerlex.ui.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.enerlex.ui.theme.*
 
 @Composable
@@ -99,20 +102,32 @@ fun ProfileScreen(
 
             // ── Avatar ────────────────────────────────────────────────────
             Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Box(
-                    modifier = Modifier
-                        .size(88.dp)
-                        .clip(CircleShape)
-                        .background(EnerGreen),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val initial = uiState.name.firstOrNull()?.toString() ?: "?"
-                    Text(
-                        text = initial,
-                        color = Color(0xFF003D2E),
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.Bold
+                val photoUrl = uiState.profilePhotoUrl
+                if (!photoUrl.isNullOrBlank()) {
+                    AsyncImage(
+                        model              = photoUrl,
+                        contentDescription = "Foto de perfil",
+                        contentScale       = ContentScale.Crop,
+                        modifier           = Modifier
+                            .size(88.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, EnerGreen, CircleShape)
                     )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(88.dp)
+                            .clip(CircleShape)
+                            .background(EnerGreen),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text       = uiState.name.firstOrNull()?.toString() ?: "?",
+                            color      = Color(0xFF003D2E),
+                            fontSize   = 36.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 

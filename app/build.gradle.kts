@@ -51,10 +51,14 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
-    // Firebase
+    // Firebase (versiones gestionadas por BOM)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)      // ← Guarda fotos de perfil
+
+    // Coil – carga imágenes desde URL de Firebase Storage
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
