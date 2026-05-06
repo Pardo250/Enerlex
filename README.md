@@ -147,11 +147,12 @@ data class Alert(
 
 ## 🗺️ Roadmap
 
-- [x] Dashboard con gráfico de 24 horas
+- [x] Dashboard con gráfico de 24 horas y tooltips interactivos
 - [x] Lista y control de dispositivos (on/off)
 - [x] Detalle de dispositivo con gráfico histórico
 - [x] Centro de alertas con severidades
-- [x] Pantalla de configuración y perfil
+- [x] Pantalla de configuración con subida de foto a Firebase Storage
+- [x] Modo oscuro dinámico y completamente funcional
 - [ ] Integración con API REST (backend IoT)
 - [ ] Autenticación real (Firebase / JWT)
 - [ ] Notificaciones push en tiempo real
