@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
@@ -47,10 +48,10 @@ class ProfilePhotoRepository {
             // ── 3. Obtener URL de descarga ─────────────────────────────────
             val downloadUrl = storageRef.downloadUrl.await().toString()
 
-            // ── 4. Guardar URL en Firestore ────────────────────────────────
+            // ── 4. Guardar URL en Firestore (set+merge por si el doc no existe) ───────
             db.collection("users")
                 .document(uid)
-                .update("photoUrl", downloadUrl)
+                .set(mapOf("photoUrl" to downloadUrl), SetOptions.merge())
                 .await()
 
             downloadUrl
@@ -98,9 +99,9 @@ class ProfilePhotoRepository {
             .downloadUrl
             .addOnSuccessListener { uri ->
                 val url = uri.toString()
-                // Persistir en Firestore para no consultar Storage la próxima vez
+                // Persistir en Firestore (set+merge por si el doc no existe)
                 db.collection("users").document(uid)
-                    .update("photoUrl", url)
+                    .set(mapOf("photoUrl" to url), SetOptions.merge())
                     .addOnFailureListener { /* ignorar error de escritura */ }
                 onResult(url)
             }

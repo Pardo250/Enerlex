@@ -1,8 +1,7 @@
 package com.example.enerlex.ui.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -49,9 +48,9 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // ── Photo Picker (no requiere permisos en API 19+) ────────────────────────
+    // ── Selector de imagen (abre explorador de archivos, funciona en emulador y dispositivo) ──
     val photoPicker = rememberLauncherForActivityResult(
-        contract = PickVisualMedia()
+        contract = GetContent()
     ) { uri ->
         uri?.let { viewModel.onPhotoSelected(it) }
     }
@@ -83,10 +82,8 @@ fun SettingsScreen(
                     remoteUrl   = uiState.profilePhotoUrl,
                     userName    = uiState.userName,
                     isUploading = uiState.isUploadingPhoto,
-                    onClick     = {
-                        photoPicker.launch(
-                            PickVisualMediaRequest(PickVisualMedia.ImageOnly)
-                        )
+                    onClick = {
+                        photoPicker.launch("image/*")   // abre explorador de archivos
                     }
                 )
 
