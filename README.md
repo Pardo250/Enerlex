@@ -169,6 +169,6 @@ Las contribuciones son bienvenidas. Por favor abre un issue o envía un pull req
 
 <div align="center">
 
-Hecho con ⚡ y Kotlin · © 2026 EnerFlow
+Hecho con ⚡ y Kotlin · © 2026 Enerlex
 
 </div>
