@@ -62,14 +62,51 @@ class ProfilePhotoRepository {
     }
 
     /**
-     * Lee la URL de la foto de perfil guardada en Firestore.
-     * Llama [onResult] con la URL, o null si el usuario no tiene foto.
+     * Lee la URL de la foto de perfil:
+     *  1. Primero intenta leer el campo "photoUrl" de Firestore (más rápido).
+     *  2. Si no existe, intenta obtener la URL directamente de Storage
+     *     (útil cuando la foto fue subida manualmente o antes de guardar en Firestore).
+     *  3. Si tampoco está en Storage, devuelve null.
      */
     fun getProfilePhotoUrl(onResult: (String?) -> Unit) {
         val uid = auth.currentUser?.uid ?: run { onResult(null); return }
 
         db.collection("users").document(uid).get()
-            .addOnSuccessListener { doc -> onResult(doc.getString("photoUrl")) }
-            .addOnFailureListener { onResult(null) }
+            .addOnSuccessListener { doc ->
+                val firestoreUrl = doc.getString("photoUrl")
+                if (!firestoreUrl.isNullOrBlank()) {
+                    // ✅ URL guardada en Firestore → usarla directamente
+                    onResult(firestoreUrl)
+                } else {
+                    // 🔄 Fallback: buscar en Storage por la ruta fija
+                    fetchUrlFromStorage(uid, onResult)
+                }
+            }
+            .addOnFailureListener {
+                // Error de red → intentar Storage igualmente
+                fetchUrlFromStorage(uid, onResult)
+            }
+    }
+
+    /**
+     * Obtiene la URL de descarga directamente desde Storage.
+     * También persiste la URL en Firestore para la próxima vez.
+     */
+    private fun fetchUrlFromStorage(uid: String, onResult: (String?) -> Unit) {
+        storage.reference
+            .child("profile_photos/$uid/avatar.jpg")
+            .downloadUrl
+            .addOnSuccessListener { uri ->
+                val url = uri.toString()
+                // Persistir en Firestore para no consultar Storage la próxima vez
+                db.collection("users").document(uid)
+                    .update("photoUrl", url)
+                    .addOnFailureListener { /* ignorar error de escritura */ }
+                onResult(url)
+            }
+            .addOnFailureListener {
+                // No hay foto en Storage tampoco → mostrar avatar con inicial
+                onResult(null)
+            }
     }
 }
